@@ -353,6 +353,7 @@ void CanBusMotorBoard::print_status()
     }
 
     rt_printf("status: ---------------------------------\n");
+    rt_printf("Length of status: %ld\n", status_->length());
     if (status_->length() > 0) status_->newest_element().print();
 
     //        rt_printf("inputs ======================================\n");
