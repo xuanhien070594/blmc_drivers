@@ -55,7 +55,7 @@ int main(int, char **) {
     /// \TODO: reduce the timeout further!!
   }
 
-  while(true){
+  while(!StopDemos){
       for (size_t i = 0; i < motor_boards.size(); i++) {
           rt_printf("Motor boards %ld\n", i);
           motor_boards[i]->print_status();
