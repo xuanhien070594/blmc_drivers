@@ -179,8 +179,10 @@ void SafeMotor::set_current_target(const double& current_target)
 
     // limit velocity to avoid breaking the robot --------------------------
     if (!std::isnan(max_velocity_) && get_measurement(velocity)->length() > 0 &&
-        std::fabs(get_measurement(velocity)->newest_element()) > max_velocity_)
+        std::fabs(get_measurement(velocity)->newest_element()) > max_velocity_) {
+        rt_printf("Max velocity is violated %f\n", get_measurement(velocity)->newest_element());
         safe_current_target = 0;
+    }
     Motor::set_current_target(safe_current_target);
 }
 
