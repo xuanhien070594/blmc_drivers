@@ -347,13 +347,13 @@ void CanBusMotorBoard::print_status()
         rt_printf("%d: ---------------------------------\n", int(i));
         if (measurement_[i]->length() > 0)
         {
+    	    rt_printf("Length of measurements %ld: %ld\n", i, measurement_[i]->length());
             double measurement = measurement_[i]->newest_element();
             rt_printf("value %f:\n", measurement);
         }
     }
 
     rt_printf("status: ---------------------------------\n");
-    rt_printf("Length of status: %ld\n", status_->length());
     if (status_->length() > 0) status_->newest_element().print();
 
     //        rt_printf("inputs ======================================\n");

@@ -34,8 +34,8 @@ int main(int, char **) {
   sigaction(SIGINT, &sigIntHandler, NULL);
   StopDemos = false;
   const int N_MOTOR_BOARDS = 6;
-  std::array<std::string, N_MOTOR_BOARDS> can_ports{"can0", "can1", "can2",
-                                                    "can3", "can4", "can5"};
+  std::array<std::string, N_MOTOR_BOARDS> can_ports{"can0", "can1", "can2", "can3", "can4", "can5"};
+  //std::array<std::string, N_MOTOR_BOARDS> can_ports{"can0", "can1"};
 
   typedef std::array<std::shared_ptr<blmc_drivers::CanBusMotorBoard>,
                      N_MOTOR_BOARDS>

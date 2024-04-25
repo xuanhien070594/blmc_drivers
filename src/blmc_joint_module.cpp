@@ -401,6 +401,8 @@ HomingReturnCode BlmcJointModule::update_homing()
 
             const double desired_torque =
                 execute_position_controller(homing_state_.target_position_rad);
+	    rt_printf("Desired torque for joint %d while homing: %lf\n", homing_state_.joint_id, desired_torque);
+	    
             set_torque(desired_torque);
 
             // Check if new encoder index was observed
