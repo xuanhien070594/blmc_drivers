@@ -177,11 +177,15 @@ void SafeMotor::set_current_target(const double& current_target)
     double safe_current_target = std::min(current_target, max_current_target_);
     safe_current_target = std::max(safe_current_target, -max_current_target_);
 
+    double vel_queue_len = get_measurement(velocity)->length();
+    double cur_vel =get_measurement(velocity)->newest_element();
+
     // limit velocity to avoid breaking the robot --------------------------
-    if (!std::isnan(max_velocity_) && get_measurement(velocity)->length() > 0 &&
-        std::fabs(get_measurement(velocity)->newest_element()) > max_velocity_) {
+    if (!std::isnan(max_velocity_) && vel_queue_len > 0 &&
+        std::fabs(cur_vel) > max_velocity_) {
         rt_printf("Max velocity is violated %f\n", get_measurement(velocity)->newest_element());
         safe_current_target = 0;
+	exit(-1);
     }
     Motor::set_current_target(safe_current_target);
 }
