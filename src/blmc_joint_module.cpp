@@ -398,7 +398,11 @@ HomingReturnCode BlmcJointModule::update_homing()
 
             // FIXME: add a safety check to stop if following error gets too
             // big.
-
+	    double cur_error = std::fabs(get_measured_angle() - homing_state_.target_position_rad);
+            if (cur_error > 0.1){
+                rt_printf("There is large error %lf rads in PD while homing \n", cur_error);
+		exit(-1);
+	    }
             const double desired_torque =
                 execute_position_controller(homing_state_.target_position_rad);
 	    rt_printf("Desired torque for joint %d while homing: %lf\n", homing_state_.joint_id, desired_torque);
