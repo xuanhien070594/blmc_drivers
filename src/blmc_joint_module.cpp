@@ -12,6 +12,9 @@
 #include <cmath>
 #include "real_time_tools/iostream.hpp"
 #include "real_time_tools/spinner.hpp"
+#include <execinfo.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 namespace blmc_drivers
 {
@@ -148,7 +151,12 @@ void BlmcJointModule::set_position_control_gains(double kp, double kd)
 double BlmcJointModule::execute_position_controller(
     double target_position_rad) const
 {
-    double diff = target_position_rad - get_measured_angle();
+    double measured_angle = get_measured_angle();
+    double diff = target_position_rad - measured_angle;
+    long int newest_measurement_index = get_motor_measurement_index(mi::position);
+    double measured_torque = get_measured_torque();
+
+    rt_printf("joint id: %d, measured_angle: %f, target_angle: %f, newest_measurement_index: %ld, sent_torque: %f, measured_torque: %f\n", homing_state_.joint_id, measured_angle, target_position_rad, newest_measurement_index, get_sent_torque(), measured_torque);
 
     // simple PD control
     double desired_torque = position_control_gain_p_ * diff -
@@ -399,13 +407,13 @@ HomingReturnCode BlmcJointModule::update_homing()
             // FIXME: add a safety check to stop if following error gets too
             // big.
 	    double cur_error = std::fabs(get_measured_angle() - homing_state_.target_position_rad);
-            if (cur_error > 0.1){
-                rt_printf("There is large error %lf rads in PD while homing \n", cur_error);
+            if (cur_error > 0.2){
+                rt_printf("Joint id %d, There is large error %lf rads in PD while homing \n", homing_state_.joint_id, cur_error);
 		exit(-1);
 	    }
             const double desired_torque =
                 execute_position_controller(homing_state_.target_position_rad);
-	    rt_printf("Desired torque for joint %d while homing: %lf\n", homing_state_.joint_id, desired_torque);
+	    //rt_printf("Desired torque for joint %d while homing: %lf\n", homing_state_.joint_id, desired_torque);
 	    
             set_torque(desired_torque);
 
