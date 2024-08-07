@@ -384,7 +384,8 @@ public:
    */
   CanBusMotorBoard(std::shared_ptr<CanBusInterface> can_bus,
                    const size_t &history_length = 1000,
-                   const int &control_timeout_ms = 100);
+                   const int &control_timeout_ms = 100,
+		   const int &cpu_id = -1);
 
   /**
    * @brief Destroy the CanBusMotorBoard object

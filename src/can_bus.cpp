@@ -18,7 +18,8 @@
 namespace blmc_drivers
 {
 CanBus::CanBus(const std::string &can_interface_name,
-               const size_t &history_length)
+               const size_t &history_length,
+	       const int& cpu_id)
 {
     input_ = std::make_shared<CanframeTimeseries>(history_length, 0, false);
     sent_input_ =
@@ -29,6 +30,10 @@ CanBus::CanBus(const std::string &can_interface_name,
     can_connection_.set(setup_can(can_interface_name, 0));
 
     is_loop_active_ = true;
+    if (cpu_id > 0){
+    	rt_thread_.parameters_.cpu_id_.push_back(cpu_id);
+    	rt_thread_.parameters_.priority_ = 90;
+    }
     rt_thread_.create_realtime_thread(&CanBus::loop, this);
 }
 
@@ -56,7 +61,8 @@ void CanBus::loop()
 {
     while (is_loop_active_)
     {
-        output_->append(receive_frame());
+	CanBusFrame recv_frame = receive_frame();
+        output_->append(recv_frame);
     }
 }
 

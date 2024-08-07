@@ -159,7 +159,8 @@ public:
      * @param history_length
      */
     CanBus(const std::string& can_interface_name,
-           const size_t& history_length = 1000);
+           const size_t& history_length = 1000,
+	   const int& cpu_id = -1);
 
     /**
      * @brief Destroy the CanBus object

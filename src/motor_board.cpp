@@ -18,7 +18,8 @@ namespace blmc_drivers
 {
 CanBusMotorBoard::CanBusMotorBoard(std::shared_ptr<CanBusInterface> can_bus,
                                    const size_t& history_length,
-                                   const int& control_timeout_ms)
+                                   const int& control_timeout_ms,
+		                   const int& cpu_id)
     : can_bus_(can_bus),
       motors_are_paused_(false),
       control_timeout_ms_(control_timeout_ms)
@@ -35,6 +36,10 @@ CanBusMotorBoard::CanBusMotorBoard(std::shared_ptr<CanBusInterface> can_bus,
         std::make_shared<CommandTimeseries>(history_length, 0, false);
 
     is_loop_active_ = true;
+    if (cpu_id > 0){
+    	rt_thread_.parameters_.cpu_id_.push_back(cpu_id);
+    	rt_thread_.parameters_.priority_ = 90;
+    }
     rt_thread_.create_realtime_thread(&CanBusMotorBoard::loop, this);
 }
 
@@ -166,7 +171,7 @@ void CanBusMotorBoard::send_newest_controls()
 
     CanBusFrame can_frame;
     can_frame.id = CanframeIDs::IqRef;
-    for (size_t i = 0; i < 7; i++)
+    for (size_t i = 0; i < 8; i++)
     {
         can_frame.data[i] = data[i];
     }
